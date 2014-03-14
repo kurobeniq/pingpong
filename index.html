@@ -17,7 +17,7 @@ var canvas;
 var context;
 
 var TEXT_COLOR    = 'rgb(255,00,00)';
-var TEXT_FONT     = 'italic bold 70px sans-serif';
+var TEXT_FONT     = 'italic bold ' + window.innerWidth * 0.05 + 'px sans-serif';
 var TEXT_MARGIN_Y = 70;//テキストの画面端からのマージン(y)
 var TEXT_ALIGN    = 'center';
 var BAR_COLOR     = 'rgb(255,00,00)';
@@ -112,6 +112,13 @@ document.addEventListener('mousemove', function(e){
         mouse_x = e.clientX;
         mouse_y = e.clientY;
         });
+
+//スマホ用マウス座標取得
+document.addEventListener('touchmove', function(e) {
+        mouse_x = e.touches[0].pageX;
+        mouse_y = e.touches[0].pageY;
+        e.preventDefault();//これでネイティブのスクロール殺す
+        }, false);
 //-->
 </script>
 </head>
