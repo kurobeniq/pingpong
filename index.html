@@ -1,0 +1,123 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>pingpong</title>
+<script type="text/javascript">
+<!--
+var mouse_x      = 0;//マウス座標
+var mouse_y      = 0;
+var ball_x       = window.innerWidth * 0.5;//ボール座標
+var ball_y       = window.innerHeight * 0.5;
+var ball_speed_x = 4;//ボールの移動速度
+var ball_speed_y = 4;
+var point_left   = 0;//点数
+var point_right  = 0;
+
+var canvas;
+var context;
+
+var TEXT_COLOR    = 'rgb(255,00,00)';
+var TEXT_FONT     = 'italic bold 70px sans-serif';
+var TEXT_MARGIN_Y = 70;//テキストの画面端からのマージン(y)
+var TEXT_ALIGN    = 'center';
+var BAR_COLOR     = 'rgb(255,00,00)';
+var BAR_WIDTH     = 30;//棒
+var BAR_HEIGHT    = 140;
+var BAR_MARGIN_X  = 40;//棒の画面端からのマージン(x)
+var BALL_COLOR    = 'rgb(255,00,00)';
+var BALL_SIZE     = 20;//ボールの半径
+
+function main() {
+    setup();
+    setInterval(draw, 10);
+}
+
+function setup() {
+    canvas = document.getElementById('c');
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    context = canvas.getContext('2d');
+}
+
+function draw() {
+    //canvasクリア
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    //text
+    context.fillStyle = TEXT_COLOR;
+    context.font = TEXT_FONT;
+    context.textAlign = TEXT_ALIGN;
+    context.fillText('KUROBENI Ping Pong!!!', canvas.width * 0.5, TEXT_MARGIN_Y);
+    context.fillText(point_left, canvas.width * 0.1, TEXT_MARGIN_Y);//点表示
+    context.fillText(point_right, canvas.width * 0.9, TEXT_MARGIN_Y);
+
+    //bar
+    context.fillStyle = BAR_COLOR;
+    context.fillRect(BAR_MARGIN_X, mouse_y - BAR_HEIGHT * 0.5, BAR_WIDTH, BAR_HEIGHT);//left bar
+    context.fillRect(canvas.width - BAR_MARGIN_X - BAR_WIDTH, mouse_y - BAR_HEIGHT * 0.5, BAR_WIDTH, BAR_HEIGHT);//right bar
+
+    //ball
+    context.beginPath();
+    context.fillStyle = BALL_COLOR;
+    context.arc(ball_x, ball_y, BALL_SIZE, 0, Math.PI * 2);
+    context.fill();
+
+    //ball移動
+    ball_x += ball_speed_x;
+    ball_y += ball_speed_y;
+    if (0 >= ball_y - BALL_SIZE || ball_y + BALL_SIZE >= canvas.height) ball_speed_y *= -1;//画面上下端での跳ね返り
+
+    //右のbarとの衝突判定(x座標)
+    if (ball_x + BALL_SIZE >= canvas.width - BAR_MARGIN_X - BAR_WIDTH){
+        //右のbarとの衝突判定(y座標)
+        if (isCollisionY()){
+            ball_speed_x *= -1;
+        } else {
+            point_left++;//左加点
+            initBallPos();
+        }
+    }
+
+    //左のbarとの衝突判定(x座標)
+    if (ball_x - BALL_SIZE <= BAR_MARGIN_X + BAR_WIDTH){
+        //左のbarとの衝突判定(y座標)
+        if (isCollisionY()){
+            ball_speed_x *= -1;
+        } else {
+            point_right++;//右加点
+            initBallPos();
+        }
+    }
+}
+
+//y座標の衝突判定は左右共通で使えるし一応まとめとく
+function isCollisionY(){
+    return (mouse_y - BAR_HEIGHT * 0.5 <= ball_y && ball_y <= mouse_y + BAR_HEIGHT * 0.5) ? true : false;
+}
+
+//ボールの場所戻奴
+function initBallPos(){
+    ball_x = canvas.width * 0.5;
+    ball_y = canvas.height * 0.5;
+}
+
+//ブラウザリサイズ奴
+window.addEventListener('resize', function() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+        });
+
+//マウス座標取得
+document.addEventListener('mousemove', function(e){
+        mouse_x = e.clientX;
+        mouse_y = e.clientY;
+        });
+//-->
+</script>
+</head>
+<body onLoad="main()" style="margin:0px;">
+<canvas id="c" style="background-color:black;">
+canvasタグをサポートしたブラウザが必要
+</canvas>
+</body>
+</html>
