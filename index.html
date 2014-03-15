@@ -113,12 +113,15 @@ document.addEventListener('mousemove', function(e){
         mouse_y = e.clientY;
         });
 
-//スマホ用マウス座標取得
-document.addEventListener('touchmove', function(e) {
-        mouse_x = e.touches[0].pageX;
-        mouse_y = e.touches[0].pageY;
-        e.preventDefault();//これでネイティブのスクロール殺す
-        }, false);
+//スマホ用タッチイベント取得
+document.addEventListener('touchstart', setTouchPos);
+document.addEventListener('touchmove', setTouchPos);
+function setTouchPos(e) {
+    mouse_x = e.touches[0].pageX;
+    mouse_y = e.touches[0].pageY;
+    e.preventDefault();//これでネイティブのスクロール殺す
+}
+
 //-->
 </script>
 </head>
